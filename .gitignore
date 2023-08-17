@@ -1,0 +1,5 @@
+*.env
+.env
+build
+dist
+REST.egg-info
