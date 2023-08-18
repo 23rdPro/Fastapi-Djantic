@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.urls import path
 
 from fastapi import APIRouter
-from blog_app.api import views
+from blog.blog_app.api.views import users, posts
+
 
 router = APIRouter()
 

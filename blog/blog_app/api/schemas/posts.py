@@ -2,7 +2,8 @@ from enum import IntEnum
 from djantic import ModelSchema
 from pydantic import BaseModel
 from blog.blog_app.models import Post
-from django.contrib.auth.models import User
+
+from .users import UserSchema
 
 
 class EnumStatusSchema(IntEnum):
@@ -13,12 +14,6 @@ class EnumStatusSchema(IntEnum):
 class StatusSchema(BaseModel):
     Draft: EnumStatusSchema = EnumStatusSchema.Draft
     Publish: EnumStatusSchema = EnumStatusSchema.Publish
-
-
-class UserSchema(ModelSchema):
-    class Config:
-        model = User
-        include = ['username', 'password', 'email']
 
 
 class PostSchema(ModelSchema):

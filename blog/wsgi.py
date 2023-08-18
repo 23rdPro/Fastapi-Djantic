@@ -1,14 +1,14 @@
 import os
 
-from importlib.util import find_spec
-
-from fastapi import FastAPI
-from fastapi.middleware.wsgi import WSGIMiddleware
-from fastapi.staticfiles import StaticFiles
+# from importlib.util import find_spec
+#
+# from fastapi import FastAPI
+# from fastapi.middleware.wsgi import WSGIMiddleware
+# from fastapi.staticfiles import StaticFiles
 
 from django.core.wsgi import get_wsgi_application
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.middleware.cors import CORSMiddleware
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'blog.settings')
 
@@ -45,4 +45,3 @@ app = FastAPI(
 # )
 
 app.include_router(router=router, prefix='/api/v1')
-
