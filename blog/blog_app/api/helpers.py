@@ -6,9 +6,10 @@ from django.core.exceptions import ValidationError
 from jose import jwt
 from django.conf import settings
 
-KEY = settings.env('KEY')
+KEY = settings.ENV('KEY')
 
 
+@sync_to_async
 def create_token_sync(data: dict, expires_delta):
     expire = datetime.utcnow() + expires_delta
     encode = data.copy()
