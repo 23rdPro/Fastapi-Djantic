@@ -9,7 +9,7 @@ from typing import Annotated
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f'{prefix}/token')
 oauth = Depends(oauth2_scheme)
-KEY = settings.env("KEY")  # openssl rand -hex 32
+KEY = settings.ENV("KEY")  # openssl rand -hex 32
 
 
 async def get_user(token: Annotated[str, oauth]):
@@ -19,18 +19,18 @@ async def get_user(token: Annotated[str, oauth]):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = await sync_to_async(jwt.decode)(
-            token, KEY, algorithms=['HS256']
-        )
+        payload = await sync_to_async(
+            jwt.decode)(
+            token, KEY, algorithms=['HS256'])
         username = payload.get("sub")
 
-        if not await User.objects.afilter(
-                username=username).aexists():
+        user = await sync_to_async(
+            User.objects.filter)(username=username)
+        if not await user.aexists():
             raise http_exception
 
     except JWTError:
         raise http_exception
-
     return await User.objects.aget(username=username)
 
 
