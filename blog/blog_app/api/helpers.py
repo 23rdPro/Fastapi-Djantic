@@ -1,17 +1,23 @@
 import re
-
-from typing import Union
-
+from datetime import datetime
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-# from django.utils.translation import gettext_lazy as _
-from djantic import ModelSchema
-from pydantic import BaseModel
+from jose import jwt
+from django.conf import settings
+
+KEY = settings.env('KEY')
+
+
+def create_token_sync(data: dict, expires_delta):
+    expire = datetime.utcnow() + expires_delta
+    encode = data.copy()
+    encode.update({'exp': expire})
+    return jwt.encode(encode, KEY, algorithm='HS256')
 
 
 @sync_to_async
-def to_schema(orm, schema_cls: Union[ModelSchema, BaseModel]):
+def to_schema(orm, schema_cls):
     return schema_cls.from_orm(orm)
 
 
