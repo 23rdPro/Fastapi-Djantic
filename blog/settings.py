@@ -2,15 +2,15 @@ import environ
 import os
 from pathlib import Path
 
-env = environ.Env(ALLOWED_HOSTS=(list, []))
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-environ.Env.read_env(os.path.join(BASE_DIR / '.env'))
+environ.Env.read_env(os.path.join(BASE_DIR / '.ENV'))
 
-SECRET_KEY = env("SECRET_KEY")
+ENV = environ.Env(ALLOWED_HOSTS=(list, []))
 
-DEBUG = env("DEBUG")
+SECRET_KEY = ENV("SECRET_KEY")
+
+DEBUG = ENV("DEBUG")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -57,9 +57,9 @@ ASGI_APPLICATION = 'blog.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('NAME'),
-        'USER': env('USER'),
-        'PASSWORD': env('PASSWORD'),
+        'NAME': ENV('NAME'),
+        'USER': ENV('USER'),
+        'PASSWORD': ENV('PASSWORD'),
         'HOST': 'localhost',
         'PORT': '',
     }
