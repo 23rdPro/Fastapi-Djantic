@@ -22,24 +22,33 @@ def to_schema(orm, schema_cls):
     return schema_cls.from_orm(orm)
 
 
-@sync_to_async
-def create_user_sync(**kwargs):
+def validate_u_regex(**kwargs):
     # regex is in two parts, negative lookahead: ?!.* and
     # chars not alphanumeric
     ptn = re.compile(r'^(?!.*[^\dA-Za-z]).*$', re.I)
-    if re.match(ptn, kwargs.get("username")) is None:
-        raise ValidationError("username only accepts alphanumeric")
-    elif User.objects.filter(username=kwargs.get('username')).exists():
-        raise ValidationError('username already exists')
     pwd_ptn = re.compile(
         r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
         re.I
     )
-    if re.match(pwd_ptn, kwargs.get('password')) is None:
-        raise ValidationError("""
-        password must contain at least 8 characters,
-        at least one uppercase letter,
-        one lowercase letter,
-        one number and one special character
-        """)
-    return User.objects.create_user(**kwargs)
+
+    if kwargs.get('username'):
+        if re.match(ptn, kwargs.get("username")) is None:
+            raise ValidationError("username only accepts alphanumeric")
+        elif User.objects.filter(username=kwargs.get('username')).exists():
+            raise ValidationError('username already exists')
+
+    if kwargs.get('password'):
+        if re.match(pwd_ptn, kwargs.get('password')) is None:
+            raise ValidationError("""
+            password must contain at least 8 characters,
+            at least one uppercase letter,
+            one lowercase letter,
+            one number and one special character
+            """)
+    return True
+
+
+@sync_to_async
+def create_user_sync(**kwargs):
+    if validate_u_regex(**kwargs):
+        return User.objects.create_user(**kwargs)
