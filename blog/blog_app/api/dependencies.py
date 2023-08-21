@@ -34,14 +34,14 @@ async def get_user(token: Annotated[str, oauth]):
     return await User.objects.aget(username=username)
 
 
-user_obj = Depends(get_user)
+user_dependency = Depends(get_user)
 
 
-async def get_active_user(user: Annotated[User, user_obj]):
+async def get_active_user(user: Annotated[User, user_dependency]):
     if user.is_active:
         return user
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                         detail="Inactive User")
 
 
-active_user_obj = Depends(get_active_user)
+active_user_dependency = Depends(get_active_user)
