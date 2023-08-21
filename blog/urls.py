@@ -36,6 +36,20 @@ router.get(
     tags=['users', ]
 )(users.get_users)
 
+router.delete(
+    '/users/me/delete',
+    status_code=status.HTTP_200_OK,
+    tags=['users', ],
+    summary="delete user"
+)(users.delete_me)
+
+router.patch(
+    '/users/me/update',
+    status_code=status.HTTP_200_OK,
+    tags=['users', ],
+    summary="update user"
+)(users.update_me)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
