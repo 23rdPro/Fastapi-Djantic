@@ -1,11 +1,14 @@
+# from __future__ import annotations
+
 import datetime
 
 from asgiref.sync import sync_to_async
-from blog.blog_app.api.dependencies import user_obj, active_user_obj
+from blog.blog_app.api.dependencies import user_dependency, active_user_dependency
 from blog.blog_app.api.helpers import (
     create_user_sync,
     to_schema,
     create_token_sync,
+    validate_u_regex,
 )
 from blog.blog_app.api.schemas.users import UserSchema
 from django.contrib.auth.models import User
@@ -45,29 +48,30 @@ async def login(form: Annotated[OAuth2PasswordRequestForm, Depends()]):
     return TokenModel(**token_data)
 
 
-async def logout():
-    pass
-
-
-async def get_user():
-    pass
-
-
-async def get_users(user: Annotated[User, active_user_obj]):
+async def get_users(user: Annotated[User, active_user_dependency]):
     users = User.objects.all()
-    await sync_to_async(print)(users)
     return await sync_to_async(UserSchema.from_django)(users, many=True)
 
 
-async def me(user: Annotated[User, user_obj]):
+async def me(user: Annotated[User, user_dependency]):
     return await to_schema(user, UserSchema)
 
 
-async def update_me():
-    pass
+async def update_me(user: Annotated[User, user_dependency], schema: UserSchema or None = None):
+    # partial update
+    u = await sync_to_async(User.objects.filter)(pk=user.pk)
+    s_data = schema.dict(
+        exclude_none=True,
+        exclude_defaults=True,
+        exclude_unset=True
+    )
+    if await u.aexists() and await sync_to_async(validate_u_regex)(**s_data):
+        await u.aupdate(**s_data)
+    u = await u.aget()
+    return await sync_to_async(UserSchema.from_orm)(u)
 
 
-async def delete_me(user: Annotated[User, user_obj]):
+async def delete_me(user: Annotated[User, user_dependency]):
     yoozer = await sync_to_async(User.objects.filter)(id=user.pk)
     if await yoozer.aexists():
         await sync_to_async(yoozer.delete)()
