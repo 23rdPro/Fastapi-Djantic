@@ -1,4 +1,11 @@
-async def create_post():
+from typing import Annotated
+
+from blog.blog_app.api.dependencies import active_user_dependency
+from blog.blog_app.api.schemas.posts import PostSchema
+from django.contrib.auth.models import User
+
+
+async def create_post(user: Annotated[User, active_user_dependency], schema: PostSchema):
     pass
 
 
