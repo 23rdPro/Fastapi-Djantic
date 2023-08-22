@@ -26,6 +26,8 @@ class PostSchema(ModelSchema):
 
 class UpdatePostSchema(ModelSchema):
     status: EnumStatusSchema or None = None
+    title: str or None = None
+    content: str or None = None
 
     class Config:
         model = Post
@@ -38,5 +40,5 @@ class DisplayPostSchema(ModelSchema):
 
     class Config:
         model = Post
-        include = ['title', 'content', 'status', 'slug',
+        include = ['id', 'title', 'content', 'status', 'slug',
                    'created_on', 'updated_on', 'author']
