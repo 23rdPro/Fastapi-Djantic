@@ -64,6 +64,36 @@ router.get(
     tags=['posts']
 )(posts.get_posts)
 
+router.delete(
+    '/posts/{post_id}/delete',
+    status_code=status.HTTP_200_OK,
+    summary='delete post me',
+    tags=['posts']
+)(posts.delete_post_me)
+
+router.patch(
+    '/posts/{post_id}/update',
+    status_code=status.HTTP_200_OK,
+    tags=['posts'],
+    summary='update post me'
+)(posts.update_post_me)
+
+router.get(
+    '/posts/me',
+    status_code=status.HTTP_200_OK,
+    summary='get all posts by me',
+    tags=['posts']
+
+)(posts.get_posts_me)
+
+router.get(
+    '/posts/{post_id}',
+    status_code=status.HTTP_200_OK,
+    summary='view single post',
+    tags=['posts']
+)(posts.post)
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
