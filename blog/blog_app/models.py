@@ -15,9 +15,22 @@ class Post(models.Model):
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS, default=0)
+    objects = models.Manager()
 
     class Meta:
         ordering = ['-created_on']
 
     def __str__(self):
         return self.title
+
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        # if self.slug == '':
+        #     self.slug = '-'.join(str(self.title).split())
+
+        # this runs at saves and updates
+        self.slug = '-'.join(str(self.title).split())
+
+        i = super(Post, self).save(force_insert=False, force_update=False, using=None, update_fields=None)
+        return i
