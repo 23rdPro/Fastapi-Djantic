@@ -17,10 +17,26 @@ class StatusSchema(BaseModel):
 
 
 class PostSchema(ModelSchema):
-    author: UserSchema
     status: EnumStatusSchema
 
     class Config:
         model = Post
-        include = ['title', 'slug', 'author', 'created_on',
-                   'updated_on', 'content', 'status', ]
+        include = ['title', 'content', 'status', ]
+
+
+class UpdatePostSchema(ModelSchema):
+    status: EnumStatusSchema or None = None
+
+    class Config:
+        model = Post
+        include = ["title", "content", "status"]
+
+
+class DisplayPostSchema(ModelSchema):
+    author: UserSchema
+    status: int
+
+    class Config:
+        model = Post
+        include = ['title', 'content', 'status', 'slug',
+                   'created_on', 'updated_on', 'author']
