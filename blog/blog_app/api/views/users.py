@@ -48,7 +48,7 @@ async def login(form: Annotated[OAuth2PasswordRequestForm, Depends()]):
     return TokenModel(**token_data)
 
 
-async def get_users(user: Annotated[User, active_user_dependency]):
+async def get_users(user: Annotated[User, active_user_dependency]):  # noqa
     users = User.objects.all()
     return await sync_to_async(UserSchema.from_django)(users, many=True)
 
@@ -72,9 +72,10 @@ async def update_me(user: Annotated[User, user_dependency], schema: UserSchema o
 
 
 async def delete_me(user: Annotated[User, user_dependency]):
-    yoozer = await sync_to_async(User.objects.filter)(id=user.pk)
-    if await yoozer.aexists():
-        await sync_to_async(yoozer.delete)()
+    u = await sync_to_async(User.objects.filter)(pk=user.pk)
+    if await u.aexists():
+        await sync_to_async(u.delete)()
+        # handle auth revoke todo
         return {'ok': True}
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
