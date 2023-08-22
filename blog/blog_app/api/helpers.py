@@ -1,12 +1,18 @@
 import re
 from datetime import datetime
 from asgiref.sync import sync_to_async
+from blog.blog_app.models import Post
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from jose import jwt
 from django.conf import settings
 
 KEY = settings.ENV('KEY')
+
+
+@sync_to_async
+def get_posts_me_sync(me: str):
+    return Post.objects.filter(author__username=me).select_related('author')
 
 
 @sync_to_async
@@ -20,6 +26,11 @@ def create_token_sync(data: dict, expires_delta):
 @sync_to_async
 def to_schema(orm, schema_cls):
     return schema_cls.from_orm(orm)
+
+
+@sync_to_async
+def to_schema_many(queryset, schema_cls):
+    return schema_cls.from_django(queryset, many=True)
 
 
 def validate_u_regex(**kwargs):
