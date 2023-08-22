@@ -50,6 +50,20 @@ router.patch(
     summary="update user"
 )(users.update_me)
 
+router.post(
+    '/posts',
+    status_code=status.HTTP_201_CREATED,
+    summary='create post',
+    tags=['posts']
+)(posts.create_post_me)
+
+router.get(
+    '/posts',
+    status_code=status.HTTP_200_OK,
+    summary='get all posts',
+    tags=['posts']
+)(posts.get_posts)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
